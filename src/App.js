@@ -90,7 +90,46 @@ function App() {
     setSex('')
   }
 
-  const addToCart = (sneakerObj) => {
+  const addNewCartItem = (sneaker) => {
+    setCartData([
+      ...cartData, {
+        ...sneaker,
+        color: selectedColor,
+        size: selectedSize,
+        quantity: 1,
+      }
+    ])
+  }
+
+  const updateCartItemQuantity = (updateIndex, increase = true) => {
+    const amount = cartData[updateIndex].quantity
+
+    setCartData(cartData.map((it, index) => {
+      if (index === updateIndex) {
+        return {
+          ...it,
+          quantity: amount + (increase ? 1 : -1)
+        }
+      }
+      return it
+    }))
+  }
+
+  const getItemIndex = (id) => {
+    return cartData.findIndex(it => it.id === id && it.color === selectedColor && it.size === selectedSize)
+  }
+
+  const addToCart = (sneaker) => {
+    const index = getItemIndex(sneaker.id)
+
+    if (index >= 0) {
+      updateCartItemQuantity(index)
+    } else {
+      addNewCartItem(sneaker)
+    }
+  }
+
+  const addToCartV2 = (sneakerObj) => {
     const itemToAdd = {
       ...sneakerObj,
       color: selectedColor,
